@@ -1,12 +1,14 @@
 package br.com.unoesc.pb.transferenciacompacito.service;
 
+import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaFORM;
+import br.com.unoesc.pb.transferenciacompacito.models.Usuario;
 import org.apache.commons.mail.*;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
 
-    public void enviar(String emailDestinatario, String titulo, String mensagem){
+    public void enviar(String emailDestinatario, String titulo, String mensagem) {
         try {
             Email email = new SimpleEmail();
             email.setHostName("smtp.gmail.com");
@@ -24,5 +26,17 @@ public class EmailService {
             e.printStackTrace();
         }
     }
+
+    public void emailTransferencia(Usuario remetente, Usuario destinatario, Integer valor) {
+        enviar(remetente.getEmail(), "Transferencia Realizada",
+                "Transferencia no valor de " + valor + " realizada para " +
+                        destinatario.getNome()
+        );
+
+        enviar(destinatario.getEmail(), "Transferencia Recebida",
+                "Transferencia no valor de " + valor + " recebida de " + remetente.getNome()
+        );
+    }
+
 
 }

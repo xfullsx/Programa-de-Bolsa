@@ -1,8 +1,13 @@
 package br.com.unoesc.pb.transferenciacompacito.form;
 
+import javax.validation.constraints.NotNull;
+
 public class TransferenciaFORM {
+    @NotNull
     private Long id_remetente;
+    @NotNull
     private Long id_destinatario;
+    @NotNull
     private Integer valor;
 
     public Long getId_remetente() {
