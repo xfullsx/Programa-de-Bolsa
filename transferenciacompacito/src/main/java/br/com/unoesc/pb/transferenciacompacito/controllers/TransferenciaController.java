@@ -50,7 +50,7 @@ public class TransferenciaController {
             new EmailService().emailTransferencia(t);
             return ResponseEntity.ok().body("Transferência efetuada com sucesso! Um e-mail foi enviado para os envolvidos.");
         } catch (Exception e) {
-            return ResponseEntity.ok().body("Erro ao enviar email, mas transação efetuada com sucesso! ");
+            return ResponseEntity.ok().body("Transação efetuada com sucesso, mas erro ao enviar email");
         }
     }
 

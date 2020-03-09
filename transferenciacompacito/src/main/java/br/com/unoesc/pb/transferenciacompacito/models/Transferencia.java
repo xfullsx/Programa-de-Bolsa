@@ -61,7 +61,7 @@ public class Transferencia {
         Optional<Usuario> destinatario = repository.findById(form.getIdDestinatario());
 
         if (!remetente.isPresent() || !destinatario.isPresent()) {
-            throw new UsuarioNaoEncontradoException();
+            throw new UsuarioNaoEncontradoException("Um dos usuários envolvidos na transação não foi encontrado");
         }
 
         this.setUsuarioOrigem(remetente.get());

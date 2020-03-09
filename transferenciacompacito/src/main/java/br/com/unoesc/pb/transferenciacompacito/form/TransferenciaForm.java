@@ -1,17 +1,17 @@
 package br.com.unoesc.pb.transferenciacompacito.form;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class TransferenciaForm {
-//    @NotNull    @NotEmpty
+    @NotNull    @Min(value = 1)
     private Long idRemetente;
 
-//    @NotNull    @NotEmpty
+    @NotNull    @Min(value = 1)
     private Long idDestinatario;
 
-//    @NotNull    @DecimalMin("0.0")
+    @NotNull    @DecimalMin(value = "0.0", inclusive = false)
     private Integer valor;
 
     public Long getIdRemetente() {

@@ -51,7 +51,7 @@ public class Usuario {
     }
 
     public void sacar(Integer valorSaque) {
-        if(valorSaque < 0) {
+        if(valorSaque <= 0) {
             throw new SaqueNegativoException("Valor negativo informado para o saque!");
         } else if (this.credito < valorSaque) {
             throw new SaldoInsuficienteException("Saldo insuficiente! Saldo: " + this.credito + " Valor: " + valorSaque);
