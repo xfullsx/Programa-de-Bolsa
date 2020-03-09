@@ -1,5 +1,6 @@
 package br.com.unoesc.pb.transferenciacompacito.controllers;
 
+import br.com.unoesc.pb.transferenciacompacito.controllers.dto.TransferenciaDto;
 import br.com.unoesc.pb.transferenciacompacito.exception.SaldoInsuficienteException;
 import br.com.unoesc.pb.transferenciacompacito.exception.SaqueNegativoException;
 import br.com.unoesc.pb.transferenciacompacito.exception.UsuarioNaoEncontradoException;
@@ -11,13 +12,14 @@ import br.com.unoesc.pb.transferenciacompacito.repositorys.UsuarioRepository;
 import br.com.unoesc.pb.transferenciacompacito.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class TransferenciaController {
@@ -28,7 +30,7 @@ public class TransferenciaController {
     @Autowired
     private TransferenciaRepository transferenciaRepository;
 
-    // TODO: transferir somente apartir do id do usuário logado
+    // TODO: considerar como usuário de origem o que está autenticado
     @PostMapping("/transferir")
     @Transactional
     public ResponseEntity<String> transeferirCoins(@Valid @RequestBody TransferenciaForm body) {
@@ -52,6 +54,19 @@ public class TransferenciaController {
         } catch (Exception e) {
             return ResponseEntity.ok().body("Transação efetuada com sucesso, mas erro ao enviar email");
         }
+    }
+
+    // TODO: pode ser necessária remoção/refatoração do presente método
+    @GetMapping("/transferencias/{id}")
+    public ResponseEntity<List<TransferenciaDto>> transferenciasUsuario(@PathVariable Long id){
+        Usuario u = usuarioRepository.getOne(id);
+        List<Transferencia> transferenciasRealizadas = u.getTransferenciasRealizadas();
+
+
+        List<TransferenciaDto> transferenciaDtoStream = transferenciasRealizadas.stream().map(TransferenciaDto::new).collect(Collectors.toList());
+
+
+        return ResponseEntity.ok(transferenciaDtoStream);
     }
 
 }

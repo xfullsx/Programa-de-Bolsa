@@ -3,7 +3,6 @@ package br.com.unoesc.pb.transferenciacompacito.models;
 import br.com.unoesc.pb.transferenciacompacito.exception.UsuarioNaoEncontradoException;
 import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaForm;
 import br.com.unoesc.pb.transferenciacompacito.repositorys.UsuarioRepository;
-import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
 import java.util.Optional;
@@ -14,10 +13,10 @@ public class Transferencia {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuarioOrigem;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuarioDestino;
 
     private Integer valor;

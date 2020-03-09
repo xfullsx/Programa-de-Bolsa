@@ -25,6 +25,21 @@ public class Usuario {
         return credito;
     }
 
+    public List<Transferencia> getTransferenciasRealizadas() {
+        return transferenciasRealizadas;
+    }
+
+    public void setTransferenciasRealizadas(List<Transferencia> transferenciasRealizadas) {
+        this.transferenciasRealizadas = transferenciasRealizadas;
+    }
+
+    public List<Transferencia> getTransferenciasRecebidas() {
+        return transferenciasRecebidas;
+    }
+
+    public void setTransferenciasRecebidas(List<Transferencia> transferenciasRecebidas) {
+        this.transferenciasRecebidas = transferenciasRecebidas;
+    }
 
     public Usuario(){}
 
