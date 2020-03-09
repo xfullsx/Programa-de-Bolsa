@@ -1,14 +1,14 @@
 package br.com.unoesc.pb.transferenciacompacito.controllers;
 
 import br.com.unoesc.pb.transferenciacompacito.exception.SaldoInsuficienteException;
-import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaFORM;
+import br.com.unoesc.pb.transferenciacompacito.exception.SaqueNegativoException;
+import br.com.unoesc.pb.transferenciacompacito.exception.UsuarioNaoEncontradoException;
+import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaForm;
 import br.com.unoesc.pb.transferenciacompacito.models.Transferencia;
 import br.com.unoesc.pb.transferenciacompacito.models.Usuario;
 import br.com.unoesc.pb.transferenciacompacito.repositorys.TransferenciaRepository;
 import br.com.unoesc.pb.transferenciacompacito.repositorys.UsuarioRepository;
 import br.com.unoesc.pb.transferenciacompacito.service.EmailService;
-import org.apache.commons.mail.EmailException;
-import org.hibernate.jdbc.Expectation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,32 +28,26 @@ public class TransferenciaController {
     @Autowired
     private TransferenciaRepository transferenciaRepository;
 
-    @PostMapping("/transferenciacoins")
+    // TODO: transferir somente apartir do id do usuário logado
+    @PostMapping("/transferir")
     @Transactional
-    public ResponseEntity<String> transeferirCoins(@Valid @RequestBody TransferenciaFORM body) {
-
-        Optional<Usuario> remetente = usuarioRepository.findById(body.getId_remetente());
-        Optional<Usuario> destinatario = usuarioRepository.findById(body.getId_destinatario());
-
-        if (!remetente.isPresent())
-            return ResponseEntity.badRequest().body("Usuario remetente não encontrado!");
-
-        else if (!destinatario.isPresent())
-            return ResponseEntity.badRequest().body("Usuario destinatário não encontrado!");
+    public ResponseEntity<String> transeferirCoins(@Valid @RequestBody TransferenciaForm body) {
 
         // Controle de envio das transferencias
+        Transferencia t;
         try {
-            remetente.get().transferir(body.getValor(), destinatario.get());
-            Transferencia transferencia = new Transferencia(body);
-            transferenciaRepository.save(transferencia);
-        } catch (SaldoInsuficienteException e) {
+            t = new Transferencia(body, usuarioRepository);
+            t.getUsuarioOrigem().transferir(t);
+            transferenciaRepository.save(t);
+        } catch (SaldoInsuficienteException | UsuarioNaoEncontradoException | SaqueNegativoException e) {
+            // TODO: verificar se a msg do erro deve ser retornada
             System.out.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
         // Controle de envio dos e-mails
         try {
-            new EmailService().emailTransferencia(remetente.get(), destinatario.get(), body.getValor());
+            new EmailService().emailTransferencia(t);
             return ResponseEntity.ok().body("Transferência efetuada com sucesso! Um e-mail foi enviado para os envolvidos.");
         } catch (Exception e) {
             return ResponseEntity.ok().body("Erro ao enviar email, mas transação efetuada com sucesso! ");

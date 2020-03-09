@@ -1,6 +1,6 @@
 package br.com.unoesc.pb.transferenciacompacito.service;
 
-import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaFORM;
+import br.com.unoesc.pb.transferenciacompacito.models.Transferencia;
 import br.com.unoesc.pb.transferenciacompacito.models.Usuario;
 import org.apache.commons.mail.*;
 import org.springframework.stereotype.Service;
@@ -27,14 +27,18 @@ public class EmailService {
         }
     }
 
-    public void emailTransferencia(Usuario remetente, Usuario destinatario, Integer valor) {
-        enviar(remetente.getEmail(), "Transferencia Realizada",
-                "Transferencia no valor de " + valor + " realizada para " +
+    public void emailTransferencia(Transferencia transferencia) {
+        Usuario remetente = transferencia.getUsuarioOrigem();
+        Usuario destinatario = transferencia.getUsuarioDestino();
+
+
+        enviar(remetente.getEmail(), "Transferência Realizada",
+                "Transferência no valor de " + transferencia.getValor() + " realizada para " +
                         destinatario.getNome()
         );
 
-        enviar(destinatario.getEmail(), "Transferencia Recebida",
-                "Transferencia no valor de " + valor + " recebida de " + remetente.getNome()
+        enviar(destinatario.getEmail(), "Transferência Recebida",
+                "Transferência no valor de " + transferencia.getValor() + " recebida de " + remetente.getNome()
         );
     }
 
