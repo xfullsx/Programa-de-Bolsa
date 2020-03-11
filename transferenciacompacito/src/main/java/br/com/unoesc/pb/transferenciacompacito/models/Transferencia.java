@@ -21,6 +21,14 @@ public class Transferencia {
 
     private Integer valor;
 
+    public Transferencia(){ }
+
+    public Transferencia(Usuario usuarioOrigem, Usuario usuarioDestino, Integer valor) {
+        this.setUsuarioOrigem(usuarioOrigem);
+        this.setUsuarioDestino(usuarioDestino);
+        this.setValor(valor);
+    }
+
     public Long getId() {
         return id;
     }
@@ -53,18 +61,18 @@ public class Transferencia {
         this.valor = valor;
     }
 
-    public Transferencia(){ }
+    public Boolean efetuar() {
+        Usuario usuarioOrigem = this.getUsuarioOrigem();
+        Usuario usuarioDestino = this.getUsuarioDestino();
 
-    public Transferencia(TransferenciaForm form, UsuarioRepository repository){
-        Optional<Usuario> remetente = repository.findById(form.getIdRemetente());
-        Optional<Usuario> destinatario = repository.findById(form.getIdDestinatario());
-
-        if (!remetente.isPresent() || !destinatario.isPresent()) {
+        if(usuarioOrigem == null || usuarioDestino == null)
             throw new UsuarioNaoEncontradoException("Um dos usuários envolvidos na transação não foi encontrado");
-        }
 
-        this.setUsuarioOrigem(remetente.get());
-        this.setUsuarioDestino(destinatario.get());
-        this.setValor(form.getValor());
+
+        Integer valor = this.getValor();
+        usuarioOrigem.sacar(valor);
+        usuarioDestino.depositar(valor);
+
+        return Boolean.TRUE;
     }
 }

@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 public class TransferenciaController {
@@ -30,7 +28,6 @@ public class TransferenciaController {
     @Autowired
     private TransferenciaRepository transferenciaRepository;
 
-    // TODO: considerar como usuário de origem o que está autenticado
     @PostMapping("/transferir")
     @Transactional
     public ResponseEntity<String> transeferirCoins(@Valid @RequestBody TransferenciaForm body) {
@@ -38,8 +35,8 @@ public class TransferenciaController {
         // Controle de envio das transferencias
         Transferencia t;
         try {
-            t = new Transferencia(body, usuarioRepository);
-            t.getUsuarioOrigem().transferir(t);
+            t = body.converter(usuarioRepository); // new Transferencia(body, usuarioRepository);
+            t.efetuar();
             transferenciaRepository.save(t);
         } catch (SaldoInsuficienteException | UsuarioNaoEncontradoException | SaqueNegativoException e) {
             // TODO: verificar se a msg do erro deve ser retornada
