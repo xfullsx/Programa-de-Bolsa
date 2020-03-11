@@ -1,17 +1,33 @@
 package br.com.unoesc.pb.transferenciacompacito.models;
 
-import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaFORM;
+import br.com.unoesc.pb.transferenciacompacito.exception.UsuarioNaoEncontradoException;
+import br.com.unoesc.pb.transferenciacompacito.form.TransferenciaForm;
+import br.com.unoesc.pb.transferenciacompacito.repositorys.UsuarioRepository;
 
 import javax.persistence.*;
+import java.util.Optional;
 
-@Entity(name = "trasferencias")
+@Entity(name = "transferencia")
 public class Transferencia {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long usuario_origem;
-    private Long usuario_destino;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioOrigem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Usuario usuarioDestino;
+
     private Integer valor;
+
+    public Transferencia(){ }
+
+    public Transferencia(Usuario usuarioOrigem, Usuario usuarioDestino, Integer valor) {
+        this.setUsuarioOrigem(usuarioOrigem);
+        this.setUsuarioDestino(usuarioDestino);
+        this.setValor(valor);
+    }
 
     public Long getId() {
         return id;
@@ -21,20 +37,20 @@ public class Transferencia {
         this.id = id;
     }
 
-    public Long getUsuario_origem() {
-        return usuario_origem;
+    public Usuario getUsuarioOrigem() {
+        return usuarioOrigem;
     }
 
-    public void setUsuario_origem(Long id_remetente) {
-        this.usuario_origem = id_remetente;
+    public void setUsuarioOrigem(Usuario usuarioOrigem) {
+        this.usuarioOrigem = usuarioOrigem;
     }
 
-    public Long getUsuario_destino() {
-        return usuario_destino;
+    public Usuario getUsuarioDestino() {
+        return usuarioDestino;
     }
 
-    public void setUsuario_destino(Long id_destinatario) {
-        this.usuario_destino = id_destinatario;
+    public void setUsuarioDestino(Usuario usuario) {
+        this.usuarioDestino = usuario;
     }
 
     public Integer getValor() {
@@ -45,11 +61,18 @@ public class Transferencia {
         this.valor = valor;
     }
 
-    public Transferencia(){ }
+    public Boolean efetuar() {
+        Usuario usuarioOrigem = this.getUsuarioOrigem();
+        Usuario usuarioDestino = this.getUsuarioDestino();
 
-    public Transferencia(TransferenciaFORM form){
-        this.usuario_origem = form.getId_remetente();
-        this.usuario_destino = form.getId_destinatario();
-        this.valor = form.getValor();
+        if(usuarioOrigem == null || usuarioDestino == null)
+            throw new UsuarioNaoEncontradoException("Um dos usuários envolvidos na transação não foi encontrado");
+
+
+        Integer valor = this.getValor();
+        usuarioOrigem.sacar(valor);
+        usuarioDestino.depositar(valor);
+
+        return Boolean.TRUE;
     }
 }
