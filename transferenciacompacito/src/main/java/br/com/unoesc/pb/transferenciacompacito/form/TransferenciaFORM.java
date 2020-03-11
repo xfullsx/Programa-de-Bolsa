@@ -4,26 +4,26 @@ import javax.validation.constraints.NotNull;
 
 public class TransferenciaFORM {
     @NotNull
-    private Long id_remetente;
+    private Long idRemetente;
     @NotNull
-    private Long id_destinatario;
+    private Long idDestinatario;
     @NotNull
     private Integer valor;
 
-    public Long getId_remetente() {
-        return id_remetente;
+    public Long getIdRemetente() {
+        return idRemetente;
     }
 
-    public void setId_remetente(Long id_remetente) {
-        this.id_remetente = id_remetente;
+    public void setIdRemetente(Long idRemetente) {
+        this.idRemetente = idRemetente;
     }
 
-    public Long getId_destinatario() {
-        return id_destinatario;
+    public Long getIdDestinatario() {
+        return idDestinatario;
     }
 
-    public void setId_destinatario(Long id_destinatario) {
-        this.id_destinatario = id_destinatario;
+    public void setIdDestinatario(Long idDestinatario) {
+        this.idDestinatario = idDestinatario;
     }
 
     public Integer getValor() {

@@ -48,8 +48,8 @@ public class Transferencia {
     public Transferencia(){ }
 
     public Transferencia(TransferenciaFORM form){
-        this.usuario_origem = form.getId_remetente();
-        this.usuario_destino = form.getId_destinatario();
+        this.usuario_origem = form.getIdRemetente();
+        this.usuario_destino = form.getIdDestinatario();
         this.valor = form.getValor();
     }
 }

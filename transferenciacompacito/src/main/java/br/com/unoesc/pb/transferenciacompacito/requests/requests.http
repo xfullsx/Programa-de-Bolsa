@@ -1,10 +1,10 @@
-POST http://localhost:8080/transferenciacoins
+POST http://localhost:8080/transferencias/transferencia
 Content-Type: application/json;
 
 {
-  "id_remetente": "1",
+  "idRemetente": "1",
   "valor": "80",
-  "id_destinatario": "2"
+  "idDestinatario": "2"
 }
 
 ###
